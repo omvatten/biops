@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import ifas
+from . import ifas
 
 aob = {}
 aob['mu_max'] = 2.05 #d-1 (Li et al. STOTEN 669, 683-691, 2019)
