@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Commands &#8212; biops  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Installation instructions" href="Installation.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="commands">
+<h1>Commands<a class="headerlink" href="#commands" title="Permalink to this headline">¶</a></h1>
+<section id="create-a-reactor">
+<h2>Create a reactor<a class="headerlink" href="#create-a-reactor" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ifas</span><span class="o">.</span><span class="n">Reactor</span><span class="p">(</span><span class="n">influent</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">VSS</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span> <span class="n">DO</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">Xbulk</span><span class="o">=</span><span class="n">default_Xbulk</span><span class="p">,</span> <span class="n">Sbulk</span><span class="o">=</span><span class="n">default_Sbulk</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">Lmax</span><span class="o">=</span><span class="mi">400</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">6</span><span class="p">),</span> <span class="n">Lbf</span><span class="o">=</span><span class="mi">5</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">6</span><span class="p">),</span> <span class="n">VSmax</span><span class="o">=</span><span class="mi">25000</span><span class="p">,</span> <span class="n">DBL</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">6</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Creates a Reactor object.</p>
+<p><em>influent</em> is a pandas dataframe with information about the influent to the reactor.
+The ‘default’ influent is a subset of the dry weather influent for the IWA benchmark simulation model (BSM1, <a class="reference external" href="http://iwa-mia.org/benchmarking/">http://iwa-mia.org/benchmarking/</a>).
+However, the user can provide her/his own influent data. The data must contain a column with the heading ‘Q’ having flow data in m3/day.
+Optionally, columns the headings ‘Time’ (in days), ‘S_s’ (biodegradable COD, g/m3), ‘S_NH4’ (gN/m3), ‘S_NO2’ (gN/m3), ‘S_NO3’ (gN/m3),
+‘X_OHO’ (heterotrophic biomass, gVSS/m3), ‘X_AOB’ (gVSS/m3), ‘X_NOB’ (gVSS/m3), ‘X_AMX’ (anammox, gVSS/m3), ‘X_CMX’ (comammox, gVSS/m3), ‘X_I’ (inert biomass, gVSS/m3)
+can also be provided.</p>
+<p><em>volume</em> is the volume of the reactor in m3.</p>
+<p><em>VSS</em> is the volatile suspended solids concentration in the reactor (gVSS/m3). Set to 0 if it is a biofilm reactor without suspended growth.</p>
+<p><em>DO</em> is the dissolved oxygen concentration in the reactor.</p>
+<p><em>Xbulk</em> is the concentrations of biomass components at the start of the simulation. The default is equal concentrations of each component.</p>
+<p><em>Sbulk</em> is the concentrations of substrate components at the start of the simulation.</p>
+<p><em>area</em> is the surface area for biofilm growth. Set to 0 if it is a suspended growth reactor without biofilm.</p>
+<p><em>Lmax</em> is the maximum biofilm thickness (m).</p>
+<p><em>Lbf</em> is the biofilm thickness at the start of the simulation (m).</p>
+<p><em>VSmax</em> is the maximum biomass concentration in the biofilm (gVSS/m3).</p>
+<p><em>DBL</em> is the diffusion boundary layer between the bulk liquid and the biofilm (m). A smaller thickness leads to lower diffusion resistance.</p>
+<p>Example: The code below will create a reactor object name <em>r</em>, using the default parameter inputs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">biops</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">biops</span><span class="o">.</span><span class="n">ifas</span><span class="o">.</span><span class="n">Reactor</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="add-a-compartment">
+<h2>Add a compartment<a class="headerlink" href="#add-a-compartment" title="Permalink to this headline">¶</a></h2>
+<p>Assume we have created a reactor object named <em>r</em>. Now we want to add a compartment.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span><span class="o">.</span><span class="n">add_compartment</span><span class="p">(</span><span class="n">influent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">DO</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">Xbulk</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">Sbulk</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">Lmax</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">Lbf</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">VSmax</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">,</span> <span class="n">DBL</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The default inputs <em>same</em> assume that everything are the same as in the preceding reactor compartment.</p>
+<p>The default <em>influent</em> is None. This assumes that the compartment does not receive any external influent, except for the water flowing from the preceding compartment.
+Influent to this compartment can be species as a pandas dataframe or dictionary object with information about flow (‘Q’) and other parameters.</p>
+</section>
+<section id="add-a-recirculating-flow">
+<h2>Add a recirculating flow<a class="headerlink" href="#add-a-recirculating-flow" title="Permalink to this headline">¶</a></h2>
+<p>Assume we have added a compartment to our reactor and now we want a recirculating flow from the second compartment to the first compartment.
+This is, for example, the design of pre-denitrification systems in wastewater treatment.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span><span class="o">.</span><span class="n">add_recirculation</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>origin</em> is the compartment number from which the flow is coming (for example, 2).</p>
+<p><em>target</em> is the compartment number to which the flow is going (for example, 1).</p>
+<p><em>Q</em> is the flow rate in m3/d.</p>
+</section>
+<section id="view-reactor-configuration">
+<h2>View reactor configuration<a class="headerlink" href="#view-reactor-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Now, we have built our reactor system and want to have a look at it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span><span class="o">.</span><span class="n">view_process</span><span class="p">(</span><span class="n">savename</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>if we specify <em>savename</em>, the resulting figure will be saved as a file.</p>
+</section>
+<section id="view-reactor-influent">
+<h2>View reactor influent<a class="headerlink" href="#view-reactor-influent" title="Permalink to this headline">¶</a></h2>
+<p>What is the actual influent to our reactor? Take a look with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span><span class="o">.</span><span class="n">view_influent</span><span class="p">(</span><span class="n">savename</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>if we specify <em>savename</em>, the resulting figure will be saved as a file.</p>
+</section>
+<section id="run-a-simulation">
+<h2>Run a simulation<a class="headerlink" href="#run-a-simulation" title="Permalink to this headline">¶</a></h2>
+<p>Now, we want to check how the reactor content (VSS composition, biofilm, effluent quality, etc.) changes after a certain time interval.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">timestep</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">set_iterations</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">set_dts</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>timestep</em> is the time duration that we will simulate (d).</p>
+<p><em>dt</em> is the resolution of the timesteps taken when data about influent characteristics are read and biomass compositions are calculated.</p>
+<p><em>set_iterations</em> is related to the calculations of substrate concentrations, which is done for each timestep (dt).
+This value is the maximum number of iterations done before moving forward in time (dt). A larger value might result in more accurate predictions but take longer time to complete.</p>
+<p><em>set_dts</em> is related to the the calculations of substrate concentrations. ‘auto’ means that the software will automatically determine the appropriate timestep.
+If the resulting substrate concentration profiles are oscillating and unrealistic, set a low value here could solve the problem. Test, e.g. 10**-7 or smaller.</p>
+<p>Information about the influent, bulk water, and biofilm concentrations and activities are logged at the end of the timestep using in r.calculate(). The information is stored in the following data objects.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span><span class="o">.</span><span class="n">influentlogger</span>
+
+<span class="n">r</span><span class="o">.</span><span class="n">bulklogger</span>
+
+<span class="n">r</span><span class="o">.</span><span class="n">biofilmlogger</span>
+</pre></div>
+</div>
+<p>To simulate the performance of the reactor, the <em>calculate</em> method should be run in a loop. See specific instructions for this.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">biops</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation instructions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Commands</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#create-a-reactor">Create a reactor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-a-compartment">Add a compartment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-a-recirculating-flow">Add a recirculating flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#view-reactor-configuration">View reactor configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#view-reactor-influent">View reactor influent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-a-simulation">Run a simulation</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="Installation.html" title="previous chapter">Installation instructions</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Oskar Modin.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/Commands.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

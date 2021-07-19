@@ -4,13 +4,14 @@ import scipy.sparse.linalg
 import matplotlib.pyplot as plt
 from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
-import pkg_resources
+import pkgutil
+import io
 from . import yields
 from . import kinetics
 
 def load_default_influent():
-    stream = pkg_resources.resource_stream(__name__, 'data/default_influent.csv')
-    return pd.read_csv(stream)
+    stream = pkgutil.get_data(__name__, 'data/default_influent.csv')
+    return pd.read_csv(io.BytesIO(stream), encoding='utf8')
 
 xparlist = ['X_I', 'X_AOB', 'X_NOB', 'X_AMX', 'X_CMX', 'X_OHO'] 
 sparlist = ['S_O2', 'S_NH4', 'S_NO2', 'S_NO3', 'S_s']
