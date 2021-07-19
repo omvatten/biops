@@ -1,5 +1,6 @@
-pandas==1.2.4
-numpy==1.20.2
-matplotlib==3.3.4
-scipy==1.6.2
-sphinx==3.2.1
+pandas
+numpy
+matplotlib
+scipy
+sphinx
+nbsphinx
