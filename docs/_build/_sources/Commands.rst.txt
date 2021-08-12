@@ -6,13 +6,13 @@ Create a reactor
 
 .. code-block:: python
 
-   ifas.Reactor(influent='default', volume=4000, VSS=3000, DO=2, Xbulk=default_Xbulk, Sbulk='influent', area=100, Lmax=400*(10**-6), Lbf=5*(10**-6), VSmax=25000, DBL=10*(10**-6))
+   ifas.Reactor(influent='default', volume=4000, VSS=3000, DO=2, Xbulk=default_Xbulk, Sbulk=default_Sbulk, area=100, Lmax=400*(10**-6), Lbf=5*(10**-6), VSmax=25000, DBL=10*(10**-6))
 
 Creates a Reactor object.
 
 *influent* is a pandas dataframe with information about the influent to the reactor.
 The 'default' influent is a subset of the dry weather influent for the IWA benchmark simulation model (BSM1, http://iwa-mia.org/benchmarking/).
-However, the user can provide own influent data. The data must contain a column with the heading 'Q' having flow data in m3/day.
+However, the user can provide her/his own influent data. The data must contain a column with the heading 'Q' having flow data in m3/day.
 Optionally, columns the headings 'Time' (in days), 'S_s' (biodegradable COD, g/m3), 'S_NH4' (gN/m3), 'S_NO2' (gN/m3), 'S_NO3' (gN/m3),
 'X_OHO' (heterotrophic biomass, gVSS/m3), 'X_AOB' (gVSS/m3), 'X_NOB' (gVSS/m3), 'X_AMX' (anammox, gVSS/m3), 'X_CMX' (comammox, gVSS/m3), 'X_I' (inert biomass, gVSS/m3)
 can also be provided.
@@ -25,7 +25,7 @@ can also be provided.
 
 *Xbulk* is the concentrations of biomass components at the start of the simulation. The default is equal concentrations of each component.
 
-*Sbulk* is the concentrations of substrate components at the start of the simulation. The default is that the concentrations are the same as in the influent.
+*Sbulk* is the concentrations of substrate components at the start of the simulation.
 
 *area* is the surface area for biofilm growth. Set to 0 if it is a suspended growth reactor without biofilm.
 
@@ -37,7 +37,7 @@ can also be provided.
 
 *DBL* is the diffusion boundary layer between the bulk liquid and the biofilm (m). A smaller thickness leads to lower diffusion resistance. 
 
-Example: The code below will create a reactor object named *r*, using the default parameter inputs.
+Example: The code below will create a reactor object name *r*, using the default parameter inputs.
 
 .. code-block:: python
 
@@ -108,7 +108,7 @@ Now, we want to check how the reactor content (VSS composition, biofilm, effluen
 
 *timestep* is the time duration that we will simulate (d).
 
-*dt* is the time resolution with which data about influent characteristics are read and biomass compositions are calculated.
+*dt* is the resolution of the timesteps taken when data about influent characteristics are read and biomass compositions are calculated.
 
 *set_iterations* is related to the calculations of substrate concentrations, which is done for each timestep (dt). 
 This value is the maximum number of iterations done before moving forward in time (dt). A larger value might result in more accurate predictions but take longer time to complete.
@@ -126,5 +126,4 @@ Information about the influent, bulk water, and biofilm concentrations and activ
    
    r.biofilmlogger
    
-To simulate the performance of the reactor, the *calculate* method should be run in a loop. See the examples for instruction.
-
+To simulate the performance of the reactor, the *calculate* method should be run in a loop. See specific instructions for this.

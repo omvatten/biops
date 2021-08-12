@@ -1,15 +1,5 @@
 Installation instructions
 ***************************
-
-biops is available at PyPI and can be installed using pip.
-
-.. code-block:: console
-
-   pip install biops
-
-Recommended installation procedure
-##################################
-
 Download `Anaconda <https://www.anaconda.com/products/individual>`_ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_
 
 Open the Anaconda or Miniconda prompt (a terminal window).
@@ -33,8 +23,7 @@ Next, install biops using pip.
 
    pip install biops
 
-To start using biops, you need some way of writing and executing Python code. I use `Spyder <https://www.spyder-ide.org/>`_ or Jupyter notebooks. 
-You can install Spyder like this:
+To start using biops, you need some way of writing and executing Python code. I use `Spyder <https://www.spyder-ide.org/>`_. You can install Spyder like this:
 
 .. code-block:: console
 
@@ -45,18 +34,6 @@ To run Spyder, simply type:
 .. code-block:: console
 
    spyder
-
-You can install Jupyter like this:
-
-.. code-block:: console
-
-   conda install jupyter 
-
-To run a Jupyter notebook, type:
-
-.. code-block:: console
-
-   jupyter notebook
 
 To check if biops works, you can run the following code:
 

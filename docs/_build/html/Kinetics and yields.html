@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Kinetics and yields &#8212; biops  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="EXAMPLE: Activated sludge system with pre-denitrification" href="Example_pre_denitrification.html" />
+    <link rel="prev" title="Commands" href="Commands.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="kinetics-and-yields">
+<h1>Kinetics and yields<a class="headerlink" href="#kinetics-and-yields" title="Permalink to this headline">¶</a></h1>
+<p>Currently, biops calculates the activities of ammonia-oxidizing bacteria (AOB), nitrite-oxidizing bacteria (NOB), anammox, comammox, and ordinary heterotrophic bacteria (OHO).
+The growth and substrate consumption rates are described using Monod kinetics (Haldane kinetics for commamox). Default kinetic constants are set, but they can be changed with the change_constants function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span><span class="o">.</span><span class="n">change_constants</span><span class="p">(</span><span class="n">func_group</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Assume we have a reactor objected, r, and we want to change the maximum growth rate of AOB to 3 d-1. Then, we can use the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">r</span><span class="o">.</span><span class="n">change_constants</span><span class="p">(</span><span class="n">func_group</span><span class="o">=</span><span class="s1">&#39;aob&#39;</span><span class="p">,</span> <span class="n">mu_max</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The following list have all the kinetics constants and their default values:</p>
+<p>AOB:</p>
+<ul class="simple">
+<li><p>mu_max = 2.05 (maximum growth rate, per day)</p></li>
+<li><p>b = 0.13 (decay rate, per day)</p></li>
+<li><p>K_O2 = 0.6 (half-saturation constant for oxygen, g/m3)</p></li>
+<li><p>K_NH4 = 2.4 (half-saturation constant for ammonium, g/m3)</p></li>
+<li><p>fs = 0.054 (fraction electron diverted to biomass, this is related to the calculation of the yield coefficient)</p></li>
+<li><p>CHON = [5,7,2,1] (assumed elemental composition of bacterial cells, this is related to the calculation of the yield coefficient)</p></li>
+<li><p>fI = 0.2 (fraction of biomass that becomes inert material during decay)</p></li>
+</ul>
+<p>NOB:</p>
+<ul class="simple">
+<li><p>mu_max = 1.45 (maximum growth rate, per day)</p></li>
+<li><p>b = 0.06 (decay rate, per day)</p></li>
+<li><p>K_O2 = 0.4 (half-saturation constant for oxygen, g/m3)</p></li>
+<li><p>K_NO2 = 0.5 (half-saturation constant for nitrite, gN/m3)</p></li>
+<li><p>fs = 0.07 (fraction electron diverted to biomass, this is related to the calculation of the yield coefficient)</p></li>
+<li><p>CHON = [5,7,2,1] (assumed elemental composition of bacterial cells, this is related to the calculation of the yield coefficient)</p></li>
+<li><p>fI = 0.2 (fraction of biomass that becomes inert material during decay)</p></li>
+</ul>
+<p>anammox:</p>
+<ul class="simple">
+<li><p>mu_max = 0.08 (maximum growth rate, per day)</p></li>
+<li><p>b = 0.003 (decay rate, per day)</p></li>
+<li><p>K_O2 = 0.01 (half-saturation constant for oxygen, g/m3)</p></li>
+<li><p>K_NO2 = 0.05 (half-saturation constant for nitrite, gN/m3)</p></li>
+<li><p>K_NH4 = 0.07 (half-saturation constant for ammonium, gN/m3)</p></li>
+<li><p>fs = 0.051 (fraction electron diverted to biomass, this is related to the calculation of the yield coefficient)</p></li>
+<li><p>CHON = [1,1.74,0.31,0.2] (assumed elemental composition of bacterial cells, this is related to the calculation of the yield coefficient)</p></li>
+<li><p>fI = 0.2 (fraction of biomass that becomes inert material during decay)</p></li>
+</ul>
+<p>comammox:</p>
+<ul class="simple">
+<li><p>mu_max = 0.14 (maximum growth rate, per day; based on Kits et al. Nature 549, 269, 2017; 14.8 umolN/mgProt.h, 400 mgProt/molN)</p></li>
+<li><p>b = 0.003 (decay rate, per day)</p></li>
+<li><p>K_O2 = 0.4 (half-saturation constant for oxygen, g/m3)</p></li>
+<li><p>K_NH4 = 0.012  (half-saturation constant for ammonium, gN/m3; Kits et al. Nature 549, 269, 2017; 0.84 uM)</p></li>
+<li><p>Ki_NH4 = 3.44 (inhibition constant for ammonium; Sakoula et al. ISME 15, 1010, 2020; 246 uM)</p></li>
+<li><p>fs = 0.02 (fraction electron diverted to biomass, this is related to the calculation of the yield coefficient)</p></li>
+<li><p>CHON = [5,7,2,1] (assumed elemental composition of bacterial cells, this is related to the calculation of the yield coefficient)</p></li>
+<li><p>fI = 0.2 (fraction of biomass that becomes inert material during decay)</p></li>
+</ul>
+<p>OHO:</p>
+<ul class="simple">
+<li><p>mu_max_O2 = 6 (maximum growth rate, per day)</p></li>
+<li><p>mu_max_NOx = 4.8 (maximum growth rate, per day)</p></li>
+<li><p>b = 0.62 (decay rate, per day)</p></li>
+<li><p>K_s = 20 (half-saturation constant for COD, g/m3)</p></li>
+<li><p>K_O2 = 0.2 (half-saturation constant for oxygen, g/m3)</p></li>
+<li><p>K_NOx = 0.3 (half-saturation constant for nitrite and nitrate, gN/m3)</p></li>
+<li><p>fs_O2 = 0.67 (fraction electron diverted to biomass, this is related to the calculation of the yield coefficient)</p></li>
+<li><p>fs_NOx = 0.67 (fraction electron diverted to biomass, this is related to the calculation of the yield coefficient)</p></li>
+<li><p>CHON = [5,7,2,1] (assumed elemental composition of bacterial cells, this is related to the calculation of the yield coefficient)</p></li>
+<li><p>fI = 0.2 (fraction of biomass that becomes inert material during decay)</p></li>
+</ul>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">biops</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Commands.html">Commands</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Kinetics and yields</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_pre_denitrification.html">EXAMPLE: Activated sludge system with pre-denitrification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_nitrifying_biofilm.html">EXAMPLE: Nitrifying biofilm</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="Commands.html" title="previous chapter">Commands</a></li>
+      <li>Next: <a href="Example_pre_denitrification.html" title="next chapter">EXAMPLE: Activated sludge system with pre-denitrification</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Oskar Modin.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/Kinetics and yields.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

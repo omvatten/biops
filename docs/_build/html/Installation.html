@@ -15,6 +15,8 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Commands" href="Commands.html" />
@@ -37,6 +39,12 @@
             
   <section id="installation-instructions">
 <h1>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h1>
+<p>biops is available at PyPI and can be installed using pip.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install biops</span>
+</pre></div>
+</div>
+<section id="recommended-installation-procedure">
+<h2>Recommended installation procedure<a class="headerlink" href="#recommended-installation-procedure" title="Permalink to this headline">¶</a></h2>
 <p>Download <a class="reference external" href="https://www.anaconda.com/products/individual">Anaconda</a> or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a></p>
 <p>Open the Anaconda or Miniconda prompt (a terminal window).</p>
 <p>Create a new environment. You can, for example, call it biops_env. Then, activate the environment.</p>
@@ -52,12 +60,21 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install biops</span>
 </pre></div>
 </div>
-<p>To start using biops, you need some way of writing and executing Python code. I use <a class="reference external" href="https://www.spyder-ide.org/">Spyder</a>. You can install Spyder like this:</p>
+<p>To start using biops, you need some way of writing and executing Python code. I use <a class="reference external" href="https://www.spyder-ide.org/">Spyder</a> or Jupyter notebooks.
+You can install Spyder like this:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda install spyder</span>
 </pre></div>
 </div>
 <p>To run Spyder, simply type:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">spyder</span>
+</pre></div>
+</div>
+<p>You can install Jupyter like this:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda install jupyter</span>
+</pre></div>
+</div>
+<p>To run a Jupyter notebook, type:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">jupyter notebook</span>
 </pre></div>
 </div>
 <p>To check if biops works, you can run the following code:</p>
@@ -67,6 +84,7 @@
 </pre></div>
 </div>
 <p>Hopefully, this will plot a figure showing a reactor followed by a settler.</p>
+</section>
 </section>
 
 
@@ -87,8 +105,14 @@
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation instructions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#recommended-installation-procedure">Recommended installation procedure</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="Commands.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Kinetics%20and%20yields.html">Kinetics and yields</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_pre_denitrification.html">EXAMPLE: Activated sludge system with pre-denitrification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_nitrifying_biofilm.html">EXAMPLE: Nitrifying biofilm</a></li>
 </ul>
 
 <div class="relations">

@@ -15,8 +15,11 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Kinetics and yields" href="Kinetics%20and%20yields.html" />
     <link rel="prev" title="Installation instructions" href="Installation.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -38,13 +41,13 @@
 <h1>Commands<a class="headerlink" href="#commands" title="Permalink to this headline">¶</a></h1>
 <section id="create-a-reactor">
 <h2>Create a reactor<a class="headerlink" href="#create-a-reactor" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ifas</span><span class="o">.</span><span class="n">Reactor</span><span class="p">(</span><span class="n">influent</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">VSS</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span> <span class="n">DO</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">Xbulk</span><span class="o">=</span><span class="n">default_Xbulk</span><span class="p">,</span> <span class="n">Sbulk</span><span class="o">=</span><span class="n">default_Sbulk</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">Lmax</span><span class="o">=</span><span class="mi">400</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">6</span><span class="p">),</span> <span class="n">Lbf</span><span class="o">=</span><span class="mi">5</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">6</span><span class="p">),</span> <span class="n">VSmax</span><span class="o">=</span><span class="mi">25000</span><span class="p">,</span> <span class="n">DBL</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">6</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ifas</span><span class="o">.</span><span class="n">Reactor</span><span class="p">(</span><span class="n">influent</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">VSS</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span> <span class="n">DO</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">Xbulk</span><span class="o">=</span><span class="n">default_Xbulk</span><span class="p">,</span> <span class="n">Sbulk</span><span class="o">=</span><span class="s1">&#39;influent&#39;</span><span class="p">,</span> <span class="n">area</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">Lmax</span><span class="o">=</span><span class="mi">400</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">6</span><span class="p">),</span> <span class="n">Lbf</span><span class="o">=</span><span class="mi">5</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">6</span><span class="p">),</span> <span class="n">VSmax</span><span class="o">=</span><span class="mi">25000</span><span class="p">,</span> <span class="n">DBL</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">6</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Creates a Reactor object.</p>
 <p><em>influent</em> is a pandas dataframe with information about the influent to the reactor.
 The ‘default’ influent is a subset of the dry weather influent for the IWA benchmark simulation model (BSM1, <a class="reference external" href="http://iwa-mia.org/benchmarking/">http://iwa-mia.org/benchmarking/</a>).
-However, the user can provide her/his own influent data. The data must contain a column with the heading ‘Q’ having flow data in m3/day.
+However, the user can provide own influent data. The data must contain a column with the heading ‘Q’ having flow data in m3/day.
 Optionally, columns the headings ‘Time’ (in days), ‘S_s’ (biodegradable COD, g/m3), ‘S_NH4’ (gN/m3), ‘S_NO2’ (gN/m3), ‘S_NO3’ (gN/m3),
 ‘X_OHO’ (heterotrophic biomass, gVSS/m3), ‘X_AOB’ (gVSS/m3), ‘X_NOB’ (gVSS/m3), ‘X_AMX’ (anammox, gVSS/m3), ‘X_CMX’ (comammox, gVSS/m3), ‘X_I’ (inert biomass, gVSS/m3)
 can also be provided.</p>
@@ -52,13 +55,13 @@ can also be provided.</p>
 <p><em>VSS</em> is the volatile suspended solids concentration in the reactor (gVSS/m3). Set to 0 if it is a biofilm reactor without suspended growth.</p>
 <p><em>DO</em> is the dissolved oxygen concentration in the reactor.</p>
 <p><em>Xbulk</em> is the concentrations of biomass components at the start of the simulation. The default is equal concentrations of each component.</p>
-<p><em>Sbulk</em> is the concentrations of substrate components at the start of the simulation.</p>
+<p><em>Sbulk</em> is the concentrations of substrate components at the start of the simulation. The default is that the concentrations are the same as in the influent.</p>
 <p><em>area</em> is the surface area for biofilm growth. Set to 0 if it is a suspended growth reactor without biofilm.</p>
 <p><em>Lmax</em> is the maximum biofilm thickness (m).</p>
 <p><em>Lbf</em> is the biofilm thickness at the start of the simulation (m).</p>
 <p><em>VSmax</em> is the maximum biomass concentration in the biofilm (gVSS/m3).</p>
 <p><em>DBL</em> is the diffusion boundary layer between the bulk liquid and the biofilm (m). A smaller thickness leads to lower diffusion resistance.</p>
-<p>Example: The code below will create a reactor object name <em>r</em>, using the default parameter inputs.</p>
+<p>Example: The code below will create a reactor object named <em>r</em>, using the default parameter inputs.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">biops</span>
 
 <span class="n">r</span> <span class="o">=</span> <span class="n">biops</span><span class="o">.</span><span class="n">ifas</span><span class="o">.</span><span class="n">Reactor</span><span class="p">()</span>
@@ -109,7 +112,7 @@ This is, for example, the design of pre-denitrification systems in wastewater tr
 </pre></div>
 </div>
 <p><em>timestep</em> is the time duration that we will simulate (d).</p>
-<p><em>dt</em> is the resolution of the timesteps taken when data about influent characteristics are read and biomass compositions are calculated.</p>
+<p><em>dt</em> is the time resolution with which data about influent characteristics are read and biomass compositions are calculated.</p>
 <p><em>set_iterations</em> is related to the calculations of substrate concentrations, which is done for each timestep (dt).
 This value is the maximum number of iterations done before moving forward in time (dt). A larger value might result in more accurate predictions but take longer time to complete.</p>
 <p><em>set_dts</em> is related to the the calculations of substrate concentrations. ‘auto’ means that the software will automatically determine the appropriate timestep.
@@ -122,7 +125,7 @@ If the resulting substrate concentration profiles are oscillating and unrealisti
 <span class="n">r</span><span class="o">.</span><span class="n">biofilmlogger</span>
 </pre></div>
 </div>
-<p>To simulate the performance of the reactor, the <em>calculate</em> method should be run in a loop. See specific instructions for this.</p>
+<p>To simulate the performance of the reactor, the <em>calculate</em> method should be run in a loop. See the examples for instruction.</p>
 </section>
 </section>
 
@@ -154,6 +157,9 @@ If the resulting substrate concentration profiles are oscillating and unrealisti
 <li class="toctree-l2"><a class="reference internal" href="#run-a-simulation">Run a simulation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="Kinetics%20and%20yields.html">Kinetics and yields</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_pre_denitrification.html">EXAMPLE: Activated sludge system with pre-denitrification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Example_nitrifying_biofilm.html">EXAMPLE: Nitrifying biofilm</a></li>
 </ul>
 
 <div class="relations">
@@ -161,6 +167,7 @@ If the resulting substrate concentration profiles are oscillating and unrealisti
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="Installation.html" title="previous chapter">Installation instructions</a></li>
+      <li>Next: <a href="Kinetics%20and%20yields.html" title="next chapter">Kinetics and yields</a></li>
   </ul></li>
 </ul>
 </div>
