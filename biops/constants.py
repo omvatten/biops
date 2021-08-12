@@ -1,6 +1,58 @@
 import pandas as pd
 
-def aob(fs=0.054, CHON=[5,7,2,1], dec=2):
+aob = {}
+aob['mu_max'] = 2.05 #d-1 (Li et al. STOTEN 669, 683-691, 2019)
+aob['b'] = 0.13 #d-1 (Li et al. STOTEN 669, 683-691, 2019)
+aob['K_O2'] = 0.6 #g/m3 (Li et al. STOTEN 669, 683-691, 2019)
+aob['K_NH4'] = 2.4 #g/m3 (Li et al. STOTEN 669, 683-691, 2019)
+aob['fs'] = 0.054
+aob['CHON'] = [5,7,2,1]
+aob['fI'] = 0.2
+
+nob = {}
+nob['mu_max'] = 1.45 #d-1 (Li et al. STOTEN 669, 683-691, 2019)
+nob['b'] = 0.06 #d-1 (Li et al. STOTEN 669, 683-691, 2019)
+nob['K_O2'] = 0.4 #gN/m3 (Laureni et al. WR 154, 104-116, 2019)
+nob['K_NO2'] = 0.5 #g/m3 (Laureni et al. WR 154, 104-116, 2019)
+nob['fs'] = 0.07
+nob['CHON'] = [5,7,2,1]
+nob['fI'] = 0.2
+
+anammox = {}
+anammox['mu_max'] = 0.08 #d-1 (Li et al. STOTEN 669, 683-691, 2019)
+anammox['b'] = 0.003 #d-1 (Li et al. STOTEN 669, 683-691, 2019)
+anammox['K_O2'] = 0.01 #gO2/m3 (Li et al. STOTEN 669, 683-691, 2019)
+anammox['K_NO2'] = 0.05 #gN/m3 (Li et al. STOTEN 669, 683-691, 2019)
+anammox['K_NH4'] = 0.07 #gN/m3 (Li et al. STOTEN 669, 683-691, 2019)
+anammox['fs'] = 0.051
+anammox['CHON'] = [1,1.74,0.31,0.2]
+anammox['fI'] = 0.2
+
+comammox = {}
+comammox['mu_max'] = 0.14 #d-1 (Kits et al. Nature 549, 269, 2017; 14.8 umolN/mgProt.h, 400 mgProt/molN)
+comammox['b'] = 0.003 #d-1 (assumed)
+comammox['K_O2'] = 0.4 #gO2/m3 (assumed)
+comammox['K_NH4'] = 0.012 #gN/m3 (Kits et al. Nature 549, 269, 2017; 0.84 uM)
+comammox['Ki_NH4'] = 3.44 #gN/m3 (Sakoula et al. ISME 15, 1010, 2020; 246 uM)
+comammox['fs'] = 0.02
+comammox['CHON'] = [5,7,2,1]
+comammox['fI'] = 0.2
+
+oho = {}
+oho['mu_max_O2'] = 6 #d-1 (Li et al. STOTEN 669, 683-691, 2019)
+oho['mu_max_NOx'] = 4.8 #d-1 (Li et al. STOTEN 669, 683-691, 2019)
+oho['b'] = 0.62 #d-1 (Li et al. STOTEN 669, 683-691, 2019)
+oho['K_s'] = 20 #g/m3 (Li et al. STOTEN 669, 683-691, 2019)
+oho['K_O2'] = 0.2 #gO2/m3 (Li et al. STOTEN 669, 683-691, 2019)
+oho['K_NOx'] = 0.3 #gN/m3 (Li et al. STOTEN 669, 683-691, 2019)
+oho['fs_O2'] = 0.67
+oho['fs_NOx'] = 0.67
+oho['substrateCHON'] = [1,2,1,0]
+oho['CHON'] = [5,7,2,1]
+oho['fI'] = 0.2
+
+## Functions for calculating yields
+def Y_aob(fs=aob['fs'], CHON=aob['CHON'], dec=2):
     Cox = (CHON[1]*(-1)+CHON[2]*(2)+CHON[3]*(3))/CHON[0]
 
     #Energy yielding reaction
@@ -52,7 +104,7 @@ def aob(fs=0.054, CHON=[5,7,2,1], dec=2):
     out['i_gN_gCODx'] = CHON[3]*14/((4-Cox)*CHON[0]*8)
     return out
 
-def nob(fs=0.07, CHON=[5,7,2,1], dec=2):
+def Y_nob(fs=nob['fs'], CHON=nob['CHON'], dec=2):
     Cox = (CHON[1]*(-1)+CHON[2]*(2)+CHON[3]*(3))/CHON[0]
     
     hco3_bm = fs/(4-Cox)  #mol HCO3- to build biomass
@@ -99,7 +151,7 @@ def nob(fs=0.07, CHON=[5,7,2,1], dec=2):
     out['i_gN_gCODx'] = CHON[3]*14/((4-Cox)*CHON[0]*8)
     return out
 
-def anammox(fs=0.051, CHON=[1,1.74,0.31,0.2], dec=2):
+def Y_anammox(fs=anammox['fs'], CHON=anammox['CHON'], dec=2):
     Cox = (CHON[1]*(-1)+CHON[2]*(2)+CHON[3]*(3))/CHON[0]
 
     hco3_bm = fs/(4-Cox) #mol HCO3- to build biomass
@@ -151,7 +203,7 @@ def anammox(fs=0.051, CHON=[1,1.74,0.31,0.2], dec=2):
     return out
 
 #(Kits et al. Nature 549, 269, 2017; 400 mg protein/mol NH3)
-def comammox(fs=0.02, CHON=[5,7,2,1], dec=2):
+def Y_comammox(fs=comammox['fs'], CHON=comammox['CHON'], dec=2):
     Cox = (CHON[1]*(-1)+CHON[2]*(2)+CHON[3]*(3))/CHON[0]
 
     #Energy yielding reaction
@@ -203,7 +255,7 @@ def comammox(fs=0.02, CHON=[5,7,2,1], dec=2):
     out['i_gN_gCODx'] = CHON[3]*14/((4-Cox)*CHON[0]*8)
     return out
 
-def oho_O2(fs=0.67, substrateCHON=[1,2,1,0], CHON=[5,7,2,1], dec=2):
+def Y_oho_O2(fs=oho['fs_O2'], substrateCHON=oho['substrateCHON'], CHON=oho['CHON'], dec=2):
     Cox = (CHON[1]*(-1)+CHON[2]*(2)+CHON[3]*(3))/CHON[0]
     substrateCox = (substrateCHON[1]*(-1)+substrateCHON[2]*(2)+substrateCHON[3]*(3))/substrateCHON[0]
     
@@ -254,7 +306,7 @@ def oho_O2(fs=0.67, substrateCHON=[1,2,1,0], CHON=[5,7,2,1], dec=2):
     out['i_gN_gCODx'] = CHON[3]*14/((4-Cox)*CHON[0]*8)
     return out
 
-def oho_NO2(fs=0.67, substrateCHON=[1,2,1,0], CHON=[5,7,2,1], dec=2):
+def Y_oho_NO2(fs=oho['fs_NOx'], substrateCHON=oho['substrateCHON'], CHON=oho['CHON'], dec=2):
     Cox = (CHON[1]*(-1)+CHON[2]*(2)+CHON[3]*(3))/CHON[0]
     substrateCox = (substrateCHON[1]*(-1)+substrateCHON[2]*(2)+substrateCHON[3]*(3))/substrateCHON[0]
     
@@ -306,7 +358,7 @@ def oho_NO2(fs=0.67, substrateCHON=[1,2,1,0], CHON=[5,7,2,1], dec=2):
     out['i_gN_gCODx'] = CHON[3]*14/((4-Cox)*CHON[0]*8)
     return out
 
-def oho_NO3(fs=0.67, substrateCHON=[1,2,1,0], CHON=[5,7,2,1], dec=2):
+def Y_oho_NO3(fs=oho['fs_NOx'], substrateCHON=oho['substrateCHON'], CHON=oho['CHON'], dec=2):
     Cox = (CHON[1]*(-1)+CHON[2]*(2)+CHON[3]*(3))/CHON[0]
     substrateCox = (substrateCHON[1]*(-1)+substrateCHON[2]*(2)+substrateCHON[3]*(3))/substrateCHON[0]
     
@@ -358,25 +410,35 @@ def oho_NO3(fs=0.67, substrateCHON=[1,2,1,0], CHON=[5,7,2,1], dec=2):
     out['i_gN_gCODx'] = CHON[3]*14/((4-Cox)*CHON[0]*8)
     return out
 
-def get_matrix(aob=aob(), nob=nob(), anammox=anammox(), comammox=comammox(), oho_O2=oho_O2(), oho_NO2=oho_NO2(), oho_NO3=oho_NO3(), fI=0.2):
+def get_matrix(values=None):
     processlist = ['AOB_growth', 'AOB_decay', 'NOB_growth', 'NOB_decay', 'AMX_growth', 'AMX_decay', 'CMX_growth', 'CMX_decay', 'OHO_growth_O2', 'OHO_growth_NO2', 'OHO_growth_NO3', 'OHO_decay']
     cols = ['X_AOB', 'X_NOB', 'X_AMX', 'X_CMX', 'X_OHO', 'X_I', 'S_NH4', 'S_NO2', 'S_NO3', 'S_s', 'S_O2', 'Equation']
     proc_matrix = pd.DataFrame(0, index=processlist, columns=cols)
 
     #AOB
-    y = aob
+    if values == None:
+        y = Y_aob()
+        y['fI'] = aob['fI']
+    else:
+        y = Y_aob(fs=values['aob']['fs'], CHON=values['aob']['CHON'])
+        y['fI'] = values['aob']['fI']
     proc_matrix.loc['AOB_growth', 'X_AOB'] = 1
     proc_matrix.loc['AOB_growth', 'S_NH4'] = -1/y['Y_gVSS_gNH4-N']
     proc_matrix.loc['AOB_growth', 'S_NO2'] = y['Y_gNO2-N_gNH4-N']/y['Y_gVSS_gNH4-N']
     proc_matrix.loc['AOB_growth', 'S_O2'] = y['Y_gO2_gNH4-N']/y['Y_gVSS_gNH4-N']
     proc_matrix.loc['AOB_growth', 'Equation'] = 'X_AOB*mu_max*(S_NH4/(K_NH4+S_NH4))*(S_O2/(K_O2+S_O2))'
     proc_matrix.loc['AOB_decay', 'X_AOB'] = -1
-    proc_matrix.loc['AOB_decay', 'X_I'] = fI
-    proc_matrix.loc['AOB_decay', 'S_s'] = 1-fI
+    proc_matrix.loc['AOB_decay', 'X_I'] = y['fI']
+    proc_matrix.loc['AOB_decay', 'S_s'] = 1-y['fI']
     proc_matrix.loc['AOB_decay', 'Equation'] = 'X_AOB*b'
 
     #NOB
-    y = nob
+    if values == None:
+        y = Y_nob()
+        y['fI'] = nob['fI']
+    else:
+        y = Y_nob(fs=values['nob']['fs'], CHON=values['nob']['CHON'])
+        y['fI'] = values['nob']['fI']
     proc_matrix.loc['NOB_growth', 'X_NOB'] = 1
     proc_matrix.loc['NOB_growth', 'S_NO2'] = -1/y['Y_gVSS_gNO2-N']
     proc_matrix.loc['NOB_growth', 'S_NO3'] = y['Y_gNO3-N_gNO2-N']/y['Y_gVSS_gNO2-N']
@@ -384,50 +446,75 @@ def get_matrix(aob=aob(), nob=nob(), anammox=anammox(), comammox=comammox(), oho
     proc_matrix.loc['NOB_growth', 'S_O2'] = y['Y_gO2_gNO2-N']/y['Y_gVSS_gNO2-N']
     proc_matrix.loc['NOB_growth', 'Equation'] = 'X_NOB*mu_max*(S_NO2/(K_NO2+S_NO2))*(S_O2/(K_O2+S_O2))'
     proc_matrix.loc['NOB_decay', 'X_NOB'] = -1
-    proc_matrix.loc['NOB_decay', 'X_I'] = fI
-    proc_matrix.loc['NOB_decay', 'S_s'] = 1-fI
+    proc_matrix.loc['NOB_decay', 'X_I'] = y['fI']
+    proc_matrix.loc['NOB_decay', 'S_s'] = 1-y['fI']
     proc_matrix.loc['NOB_decay', 'Equation'] = 'X_NOB*b'
 
     #AMX
-    y = anammox
+    if values == None:
+        y = Y_anammox()
+        y['fI'] = anammox['fI']
+    else:
+        y = Y_anammox(fs=values['anammox']['fs'], CHON=values['anammox']['CHON'])
+        y['fI'] = values['anammox']['fI']
     proc_matrix.loc['AMX_growth', 'X_AMX'] = 1
     proc_matrix.loc['AMX_growth', 'S_NH4'] = -1/y['Y_gVSS_gNH4-N']
     proc_matrix.loc['AMX_growth', 'S_NO2'] = y['Y_gNO2-N_gNH4-N']/y['Y_gVSS_gNH4-N']
     proc_matrix.loc['AMX_growth', 'S_NO3'] = y['Y_gNO3-N_gNH4-N']/y['Y_gVSS_gNH4-N']
     proc_matrix.loc['AMX_growth', 'Equation'] = 'X_AMX*mu_max*(S_NH4/(K_NH4+S_NH4))*(S_NO2/(K_NO2+S_NO2))*(K_O2/(K_O2+S_O2))'
     proc_matrix.loc['AMX_decay', 'X_AMX'] = -1
-    proc_matrix.loc['AMX_decay', 'X_I'] = fI
-    proc_matrix.loc['AMX_decay', 'S_s'] = 1-fI
+    proc_matrix.loc['AMX_decay', 'X_I'] = y['fI']
+    proc_matrix.loc['AMX_decay', 'S_s'] = 1-y['fI']
     proc_matrix.loc['AMX_decay', 'Equation'] = 'X_AMX*b'
 
     #CMX
-    y = comammox
+    if values == None:
+        y = Y_comammox()
+        y['fI'] = comammox['fI']
+    else:
+        y = Y_comammox(fs=values['comammox']['fs'], CHON=values['comammox']['CHON'])
+        y['fI'] = values['comammox']['fI']
     proc_matrix.loc['CMX_growth', 'X_AOB'] = 1
     proc_matrix.loc['CMX_growth', 'S_NH4'] = -1/y['Y_gVSS_gNH4-N']
     proc_matrix.loc['CMX_growth', 'S_NO3'] = y['Y_gNO3-N_gNH4-N']/y['Y_gVSS_gNH4-N']
     proc_matrix.loc['CMX_growth', 'S_O2'] = y['Y_gO2_gNH4-N']/y['Y_gVSS_gNH4-N']
     proc_matrix.loc['CMX_growth', 'Equation'] = 'X_CMX*mu_max*(S_NH4/(K_NH4+S_NH4+S_NH4/Ki_NH4^2))*(S_O2/(K_O2+S_O2))'
     proc_matrix.loc['CMX_decay', 'X_CMX'] = -1
-    proc_matrix.loc['CMX_decay', 'X_I'] = fI
-    proc_matrix.loc['CMX_decay', 'S_s'] = 1-fI
+    proc_matrix.loc['CMX_decay', 'X_I'] = y['fI']
+    proc_matrix.loc['CMX_decay', 'S_s'] = 1-y['fI']
     proc_matrix.loc['CMX_decay', 'Equation'] = 'X_CMX*b'
 
     #OHO
-    y = oho_O2
+    if values == None:
+        y = Y_oho_O2()
+        y['fI'] = oho['fI']
+    else:
+        y = Y_oho_O2(fs=values['oho']['fs_O2'], substrateCHON=values['oho']['substrateCHON'], CHON=values['oho']['CHON'])
+        y['fI'] = values['oho']['fI']
     proc_matrix.loc['OHO_growth_O2', 'X_OHO'] = 1
     proc_matrix.loc['OHO_growth_O2', 'S_s'] = -1/y['Y_gVSS_gCOD']
     proc_matrix.loc['OHO_growth_O2', 'S_O2'] = y['Y_gO2_gCOD']/y['Y_gVSS_gCOD']
     proc_matrix.loc['OHO_growth_O2', 'S_NH4'] = y['Y_gNH4-N_gCOD']/y['Y_gVSS_gCOD']
     proc_matrix.loc['OHO_growth_O2', 'Equation'] = 'X_OHO*mu_max*(S_s/(K_s+S_s))*(S_O2/(K_O2+S_O2))'
 
-    y = oho_NO2
+    if values == None:
+        y = Y_oho_NO2()
+        y['fI'] = oho['fI']
+    else:
+        y = Y_oho_NO2(fs=values['oho']['fs_NOx'], substrateCHON=values['oho']['substrateCHON'], CHON=values['oho']['CHON'])
+        y['fI'] = values['oho']['fI']
     proc_matrix.loc['OHO_growth_NO2', 'X_OHO'] = 1
     proc_matrix.loc['OHO_growth_NO2', 'S_s'] = -1/y['Y_gVSS_gCOD']
     proc_matrix.loc['OHO_growth_NO2', 'S_NO2'] = y['Y_gNO2-N_gCOD']/y['Y_gVSS_gCOD']
     proc_matrix.loc['OHO_growth_NO2', 'S_NH4'] = y['Y_gNH4-N_gCOD']/y['Y_gVSS_gCOD']
     proc_matrix.loc['OHO_growth_NO2', 'Equation'] = 'X_OHO*mu_max*(S_s/(K_s+S_s))*(S_NO2/(K_NOx+S_NO2))*(K_O2/(K_O2+S_O2))'
 
-    y = oho_NO3
+    if values == None:
+        y = Y_oho_NO3()
+        y['fI'] = oho['fI']
+    else:
+        y = Y_oho_NO3(fs=values['oho']['fs_NOx'], substrateCHON=values['oho']['substrateCHON'], CHON=values['oho']['CHON'])
+        y['fI'] = values['oho']['fI']
     proc_matrix.loc['OHO_growth_NO3', 'X_OHO'] = 1
     proc_matrix.loc['OHO_growth_NO3', 'S_s'] = -1/y['Y_gVSS_gCOD']
     proc_matrix.loc['OHO_growth_NO3', 'S_NO3'] = y['Y_gNO3-N_gCOD']/y['Y_gVSS_gCOD']
@@ -435,8 +522,8 @@ def get_matrix(aob=aob(), nob=nob(), anammox=anammox(), comammox=comammox(), oho
     proc_matrix.loc['OHO_growth_NO3', 'Equation'] = 'X_OHO*mu_max*(S_s(K_s+S_s))*(S_NO3/(K_NOx+S_NO3))*(K_O2/(K_O2+S_O2))'
 
     proc_matrix.loc['OHO_decay', 'X_OHO'] = -1
-    proc_matrix.loc['OHO_decay', 'X_I'] = fI
-    proc_matrix.loc['OHO_decay', 'S_s'] = 1-fI
+    proc_matrix.loc['OHO_decay', 'X_I'] = y['fI']
+    proc_matrix.loc['OHO_decay', 'S_s'] = 1-y['fI']
     proc_matrix.loc['OHO_decay', 'Equation'] = 'X_OHO*b'
     
     return proc_matrix

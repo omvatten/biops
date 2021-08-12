@@ -1,1 +1,1 @@
-import biops.ifas, biops.kinetics, biops.yields
+import biops.ifas, biops.constants

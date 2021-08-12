@@ -6,9 +6,9 @@ from matplotlib.collections import PatchCollection
 from matplotlib.patches import Rectangle
 import pkgutil
 import io
-from . import yields
-from . import kinetics
+from . import constants
 
+#Default parameters
 def load_default_influent():
     stream = pkgutil.get_data(__name__, 'data/default_influent.csv')
     return pd.read_csv(io.BytesIO(stream), encoding='utf8')
@@ -28,7 +28,20 @@ Dbf = Dw*0.8
 #sparlist = [0'S_O2', 1'S_NH4', 2'S_NO2', 3'S_NO3', 4'S_s', ]
 
 #Function to calculate growth and decay rates
-def bio_rates(xpar=default_Xbulk, spar=default_Sbulk, aob=kinetics.aob, nob=kinetics.nob, amx=kinetics.anammox, cmx=kinetics.comammox, oho=kinetics.oho):
+def bio_rates(xpar=default_Xbulk, spar=default_Sbulk, values=None):
+    if values == None:
+        aob = constants.aob
+        nob = constants.nob
+        amx = constants.anammox
+        cmx = constants.comammox
+        oho = constants.oho
+    else:
+        aob = values['aob']
+        nob = values['nob']
+        amx = values['anammox']
+        cmx = values['comammox']
+        oho = values['oho']
+    
     AOB_growth = aob['mu_max']*xpar[1]*(spar[1]/(aob['K_NH4']+spar[1]))*(spar[0]/(aob['K_O2']+spar[0]))
     AOB_decay = aob['b']*xpar[1]
     NOB_growth = nob['mu_max']*xpar[2]*(spar[2]/(nob['K_NO2']+spar[2]))*(spar[0]/(nob['K_O2']+spar[0]))
@@ -45,7 +58,7 @@ def bio_rates(xpar=default_Xbulk, spar=default_Sbulk, aob=kinetics.aob, nob=kine
     #[0 AOB_growth, 1 AOB_decay, 2 NOB_growth, 3 NOB_decay, 4 AMX_growth, 5 AMX_decay, 6 CMX_growth, 7 CMX_decay, 8 OHO_growth_O2, 9 OHO_growth_NO2, 10 OHO_growth_NO3, 11 OHO_decay])
 
 class Reactor:
-    def __init__(self, influent='default', volume=4000, VSS=3000, DO=2, Xbulk=default_Xbulk, Sbulk=default_Sbulk, area=100, Lmax=400*(10**-6), Lbf=5*(10**-6), VSmax=25000, DBL=10*(10**-6)):
+    def __init__(self, influent='default', volume=4000, VSS=3000, DO=2, Xbulk=default_Xbulk, Sbulk='influent', area=100, Lmax=400*(10**-6), Lbf=5*(10**-6), VSmax=25000, DBL=10*(10**-6)):
         if influent == 'default':
             inf = load_default_influent()
             for p in xparlist+sparlist:
@@ -73,9 +86,16 @@ class Reactor:
         self.volumes = [volume]
         self.VSS = [VSS]
         self.DO = [DO]
-        Sbulk[0] = DO
         self.Xbulk = [VSS*Xbulk/(Xbulk.sum())]
-        self.Sbulk = [Sbulk]
+        if Sbulk == 'influent':
+            sbulkarr = np.zeros(len(sparlist))
+            for i, s in enumerate(sparlist):
+                sbulkarr[i] = self.influents[-1].iloc[0][s]
+            self.Sbulk = [sbulkarr]
+        else:
+            self.Sbulk = [Sbulk]
+        self.Sbulk[-1][0] = DO
+        
         self.areas = [area]
         self.Lmax = [Lmax]
         self.Lbf = [Lbf]
@@ -84,7 +104,7 @@ class Reactor:
         bf_x = VSmax*Xbulk/Xbulk.sum()
         bf_x = np.tile(bf_x, (BF_layers+1, 1))
         bf_x[-1] = np.zeros(len(bf_x[-1]))
-        bf_s = np.tile(Sbulk, (BF_layers+1, 1))
+        bf_s = np.tile(self.Sbulk[-1], (BF_layers+1, 1))
         self.Xbiofilm = [bf_x]
         self.Sbiofilm = [bf_s]
         self.recircT = {}
@@ -100,6 +120,13 @@ class Reactor:
             self.biofilmlogger['1']['Conc'][round(self.time,2)]['thickness'] = np.linspace(0, self.Lbf[-1], BF_layers+1)
             self.biofilmlogger['1']['Prod'] = pd.DataFrame(0, index=[round(self.time,2)], columns=xparlist+sparlist)
         self.influentlogger = pd.DataFrame(self.influents[-1][['Q']+xparlist+sparlist].to_numpy()[0,:].reshape(1,-1), index=[round(self.time,2)], columns=['Q']+xparlist+sparlist)
+
+        self.constants = {}
+        self.constants['aob'] = constants.aob
+        self.constants['nob'] = constants.nob
+        self.constants['anammox'] = constants.anammox
+        self.constants['comammox'] = constants.comammox
+        self.constants['oho'] = constants.oho
 
     def add_compartment(self, influent=None, volume='same', DO='same', Xbulk='same', Sbulk='same', area='same', Lmax='same', Lbf='same', VSmax='same', DBL='same'):
         if isinstance(influent, pd.DataFrame):
@@ -182,10 +209,27 @@ class Reactor:
         self.recircT[target] = [origin, Q]
         self.recircO[origin] = [target, Q]
 
+    def change_constants(self, func_group=None, **kwargs):
+        if func_group in ['AOB', 'aob']:
+            for key, val in kwargs.items():
+                self.constants['aob'][key] = val
+        elif func_group in ['NOB', 'nob']:
+            for key, val in kwargs.items():
+                self.constants['nob'][key] = val
+        elif func_group in ['AMX', 'anammox']:
+            for key, val in kwargs.items():
+                self.constants['anammox'][key] = val
+        elif func_group in ['CMX', 'comammox']:
+            for key, val in kwargs.items():
+                self.constants['comammox'][key] = val
+        elif func_group in ['OHO', 'oho']:
+            for key, val in kwargs.items():
+                self.constants['oho'][key] = val
+
     def calculate(self, timestep=1, dt=0.1, set_iterations=1000, set_dts='auto'):
         #Process matrices for S and X
-        Xpm = yields.get_matrix()[xparlist].values
-        Spm = yields.get_matrix()[sparlist].values
+        Xpm = constants.get_matrix(values=self.constants)[xparlist].values
+        Spm = constants.get_matrix(values=self.constants)[sparlist].values
 
         #Check influent dataframe and biofilm calculation parameters
         influent_Vals = {}
@@ -216,14 +260,14 @@ class Reactor:
             for i in range(len(self.volumes)):
                 if self.areas[i] > 0:
                     testXbf = self.VSmax[i]*testX/sum(testX)
-                    br = bio_rates(xpar=testXbf, spar=testS).reshape((-1,1)) #g/m3-d
+                    br = bio_rates(xpar=testXbf, spar=testS, values=self.constants).reshape((-1,1)) #g/m3-d
                     brS = br*Spm
                     brS = brS.sum(axis=0)
                     if min(abs(0.1/brS[brS>0])) < dts:
                         dts = min(abs(0.1/brS[brS!=0]))
                 if self.VSS[i] > 0:
                     testXbulk = self.VSS[i]*testX/sum(testX)
-                    br = bio_rates(xpar=testXbulk, spar=testS).reshape((-1,1)) #g/m3-d
+                    br = bio_rates(xpar=testXbulk, spar=testS, values=self.constants).reshape((-1,1)) #g/m3-d
                     brS = br*Spm
                     brS = brS.sum(axis=0)
                     if min(abs(0.1/brS[brS>0])) < dts:
@@ -258,12 +302,12 @@ class Reactor:
                 
                 #Set variables for bulk
                 Sbulk_prev[i] = self.Sbulk[i]
-                bulk_br_prev[i] = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i]).reshape((-1,1))
+                bulk_br_prev[i] = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i], values=self.constants).reshape((-1,1))
 
                 #Set variables for biofilm calculations
                 if self.areas[i] > 0:
                     Sbf_prev[i] = self.Sbiofilm[i].copy()
-                    bf_br_prev[i] = bio_rates(xpar=self.Xbiofilm[i][:-1].T, spar=self.Sbiofilm[i][:-1].T)
+                    bf_br_prev[i] = bio_rates(xpar=self.Xbiofilm[i][:-1].T, spar=self.Sbiofilm[i][:-1].T, values=self.constants)
 
                     dx = self.Lbf[i]/(BF_layers)
                     A_matrix_bf[i] = []
@@ -289,7 +333,7 @@ class Reactor:
             run_biofilm_substrate_update = True
             run_substrate_time = 0
             run_substrate_count = 0
-            while ((run_bulk_substrate_update or run_biofilm_substrate_update) and (run_substrate_time < dt and run_substrate_count <= set_iterations)) or (run_substrate_count <= 10):
+            while ((run_bulk_substrate_update or run_biofilm_substrate_update) and (run_substrate_time < dt and run_substrate_count <= set_iterations)) or (run_substrate_count <= 200):
                 run_substrate_time = run_substrate_time + dts
                 run_substrate_count += 1
                 #if run_substrate_count == max_iterations:
@@ -304,7 +348,7 @@ class Reactor:
                     #Update biofilm concentration profiles
                     if self.areas[i] > 0:
                         new_Sbiofilm = self.Sbiofilm[i].copy()
-                        bf_br = bio_rates(xpar=self.Xbiofilm[i][:-1].T, spar=self.Sbiofilm[i][:-1].T)
+                        bf_br = bio_rates(xpar=self.Xbiofilm[i][:-1].T, spar=self.Sbiofilm[i][:-1].T, values=self.constants)
                         Sbiofilm_change = 0 #Variable to check change in conc after each iteration
                         for s in range(len(sparlist)):
                             bf_brS = bf_br*Spm[:, s].reshape(-1,1)
@@ -314,7 +358,7 @@ class Reactor:
 
                             b = self.Sbiofilm[i][:, s].copy()
                             b = 4*b - Sbf_prev[i][:, s]
-                            b[:-1] = b[:-1] + 2*dts*(2*bf_brS-bf_brS1)
+                            b[:-1] = b[:-1] + 2*dts*(2*bf_brS-bf_brS1) #Add reaction term
  
                             new_Sbiofilm[:, s] = scipy.sparse.linalg.spsolve(A_matrix_bf[i][s], b)
                             new_Sbiofilm[-1, s] = self.Sbulk[i][s]
@@ -324,7 +368,7 @@ class Reactor:
                             if change_conc_profile > Sbiofilm_change:
                                 Sbiofilm_change = change_conc_profile
 
-                            #Calculate biofilm contribution to bulk removal of s
+                            #Calculate biofilm contribution to bulk removal of S in g/m3.d reactor volume
                             delta_s[s] = sum(bf_brS)*self.Lbf[i]*self.areas[i]/self.volumes[i]
 
                         Sbf_prev[i] = self.Sbiofilm[i].copy()
@@ -372,11 +416,14 @@ class Reactor:
 
                     #Get biorates bulk
                     if VSS > 0:
-                        br = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i]).reshape((-1,1)) #g/m3-d
+                        br = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i]).reshape((-1,1), values=self.constants) #g/m3-d
                         brS = br*Spm
                         brS = brS.sum(axis=0)
                         brS1 = bulk_br_prev[i]*Spm
                         brS1 = brS1.sum(axis=0)
+                    else:
+                        brS = np.zeros(len(sparlist))
+                        brS1 = np.zeros(len(sparlist))
 
                     #Get new concentrations in current volume
                     new_Sbulk = (4*self.Sbulk[i]-Sbulk_prev[i]+2*dts*(2*brS-brS1)+2*dts*delta_s)/(3+2*Qin_total[i]*dts/self.volumes[i])
@@ -396,7 +443,7 @@ class Reactor:
             ### Update biofilm biomass concentrations
             for i in range(len(self.volumes)):
                 if self.areas[i] > 0:
-                    bf_br = bio_rates(xpar=self.Xbiofilm[i][:-1].T, spar=self.Sbiofilm[i][:-1].T)
+                    bf_br = bio_rates(xpar=self.Xbiofilm[i][:-1].T, spar=self.Sbiofilm[i][:-1].T, values=self.constants)
                     for x in range(len(xparlist)):
                         bf_brX = bf_br*Xpm[:, x].reshape(-1,1)
                         bf_brX = bf_brX.sum(axis=0)
@@ -409,7 +456,7 @@ class Reactor:
                     for lay in range(BF_layers):
                         diffX = self.Xbiofilm[i][lay].sum() - self.VSmax[i]
                         if lay == BF_layers-1 and diffX > 0:
-                            self.Xbiofilm[i][lay] = self.Xbiofilm[i][lay]/self.Xbiofilm[i][lay].sum()
+                            self.Xbiofilm[i][lay] = self.VSmax[i]*self.Xbiofilm[i][lay]/self.Xbiofilm[i][lay].sum()
                             self.Xbulk[i] = self.Xbulk[i] + diffX*(self.Xbiofilm[i][lay]/self.Xbiofilm[i][lay].sum())*self.areas[i]*(new_Lbf/BF_layers)/self.volumes[i]
                         elif lay < BF_layers-1 and diffX < 0:
                             addX = abs(diffX)*self.Xbiofilm[i][lay+1]/self.Xbiofilm[i][lay+1].sum()
@@ -433,7 +480,7 @@ class Reactor:
                     amt_x = amt_x + dt*Qinf[i][0]*Qinf[i][1:len(xparlist)+1]
                 #Get biorates bulk
                 if VSS > 0:
-                    br = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i]).reshape((-1,1)) #g/m3-d
+                    br = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i]).reshape((-1,1), values=self.constants) #g/m3-d
                     brX = br*Xpm
                     brX = brX.sum(axis=0)
                     amt_x = amt_x + dt*brX*self.volumes[i]
@@ -447,24 +494,24 @@ class Reactor:
             ###Calculate production and consumption of S and X for updating loggers
             for i in range(len(self.volumes)):
                 if VSS > 0:
-                    br = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i]).reshape((-1,1)) #g/m3-d
+                    br = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i]).reshape((-1,1), values=self.constants) #g/m3-d
                     brX = br*Xpm
                     brS = br*Spm
                     Bulk_Xprod[i] = Bulk_Xprod[i] + brX.sum(axis=0)*dt
                     Bulk_Sprod[i] = Bulk_Sprod[i] + brS.sum(axis=0)*dt
 
                 if self.areas[i] > 0:
-                    bf_br = bio_rates(xpar=self.Xbiofilm[i].T, spar=self.Sbiofilm[i].T)
+                    bf_br = bio_rates(xpar=self.Xbiofilm[i].T, spar=self.Sbiofilm[i].T, values=self.constants)
                     for s in range(len(sparlist)):
                         bf_brS = bf_br*Spm[:, s].reshape(-1,1)
                         bf_brS = bf_brS.sum(axis=0) #g/m3.d change
                         bf_brS = bf_brS*(self.Lbf[i]/BF_layers) #g/m2.d per layer
                         BF_Sprod[i][s] = BF_Sprod[i][s] + dt*bf_brS.sum()*self.areas[i]/self.volumes[i] #g/m3
                     for x in range(len(xparlist)):
-                        bf_brX = bf_br*Xpm[:, s].reshape(-1,1)
+                        bf_brX = bf_br*Xpm[:, x].reshape(-1,1)
                         bf_brX = bf_brX.sum(axis=0) #g/m3.d change
                         bf_brX = bf_brX*(self.Lbf[i]/BF_layers) #g/m2.d per layer
-                        BF_Xprod[i][s] = BF_Xprod[i][s] + dt*bf_brX.sum()*self.areas[i]/self.volumes[i] #g/m3
+                        BF_Xprod[i][x] = BF_Xprod[i][x] + dt*bf_brX.sum()*self.areas[i]/self.volumes[i] #g/m3
         #### End of dt loop
 
         #### Update loggers in the end of calculation ####
@@ -560,3 +607,54 @@ class Reactor:
         plt.tight_layout()
         if savename != None:
             plt.savefig(savename)
+    
+    def view_rates(self, savename=None):
+        points = 200
+        xinput = np.tile(default_Xbulk, (points, 1))
+
+        plt.rcParams.update({'font.size':10})
+        fig, ax = plt.subplots(nrows=4, ncols=1, figsize=(13/2.54, 22/2.54))
+
+        #NH4
+        xlist = np.linspace(0, 10, points)
+        sinput = np.tile(default_Sbulk, (points, 1))
+        sinput[:, 1] = xlist
+        y = bio_rates(spar=sinput.T, xpar=xinput.T, values=self.constants)
+        ax[0].plot(xlist, y[0]-y[1], label='AOB')
+        ax[0].plot(xlist, y[6]-y[7], label='Comammox')
+        ax[0].set_xlabel('NH4-N (mg/L)')
+        ax[0].legend(bbox_to_anchor=(1,1), loc=2)
+
+        #NO2
+        sinput = np.tile(default_Sbulk, (points, 1))
+        sinput[:, 2] = xlist
+        y = bio_rates(spar=sinput.T, xpar=xinput.T, values=self.constants)
+        ax[1].plot(xlist, y[2]-y[3], label='NOB')
+        ax[1].set_xlabel('NO2-N (mg/L)')
+        ax[1].legend(bbox_to_anchor=(1,1), loc=2)
+
+        #O2
+        xlist = np.linspace(0, 5, points)
+        sinput = np.tile(default_Sbulk, (points, 1))
+        sinput[:, 0] = xlist
+        y = bio_rates(spar=sinput.T, xpar=xinput.T, values=self.constants)
+        ax[2].plot(xlist, y[0]-y[1], label='AOB')
+        ax[2].plot(xlist, y[2]-y[3], label='NOB')
+        ax[2].plot(xlist, y[4]-y[5], label='Anammox')
+        ax[2].plot(xlist, y[6]-y[7], label='Comammox')
+        ax[2].set_xlabel('O2 (mg/L)')
+        ax[2].legend(bbox_to_anchor=(1,1), loc=2)
+
+        ax[3].plot(xlist, y[8]-y[11], label='OHO on O2')
+        ax[3].plot(xlist, (y[9]+y[10])/2-y[11], label='OHO on NOx')
+        ax[3].set_xlabel('O2 (mg/L)')
+        ax[3].legend(bbox_to_anchor=(1,1), loc=2)
+        
+        for i in range(4):
+            ax[i].set_yticks([])
+            ax[i].set_ylabel('Net growth rate')
+        
+        plt.tight_layout()
+        if savename != None:
+            plt.savefig(savename)
+
