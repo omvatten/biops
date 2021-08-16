@@ -39,29 +39,28 @@
             
   <section id="installation-instructions">
 <h1>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h1>
-<p>biops is available at PyPI and can be installed using pip.</p>
+<p>biops can be installed with pip or conda.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install biops</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda install -c omvatten biops</span>
 </pre></div>
 </div>
 <section id="recommended-installation-procedure">
 <h2>Recommended installation procedure<a class="headerlink" href="#recommended-installation-procedure" title="Permalink to this headline">¶</a></h2>
-<p>Download <a class="reference external" href="https://www.anaconda.com/products/individual">Anaconda</a> or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a></p>
+<p>The recommended method is to download <a class="reference external" href="https://www.anaconda.com/products/individual">Anaconda</a> or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a></p>
 <p>Open the Anaconda or Miniconda prompt (a terminal window).</p>
 <p>Create a new environment. You can, for example, call it biops_env. Then, activate the environment.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda create -n biops_env</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda create -n biops_env python=3.9</span>
 <span class="go">conda activate biops_env</span>
 </pre></div>
 </div>
-<p>biops depends on four other python packages: pandas, numpy, matplotlib, and scipy. To install them, use the following command:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda install pandas numpy matplotlib scipy</span>
+<p>Install biops using:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda install -c omvatten biops</span>
 </pre></div>
 </div>
-<p>Next, install biops using pip.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install biops</span>
-</pre></div>
-</div>
-<p>To start using biops, you need some way of writing and executing Python code. I use <a class="reference external" href="https://www.spyder-ide.org/">Spyder</a> or Jupyter notebooks.
-You can install Spyder like this:</p>
+<p>To start using biops, you need some way of writing and executing Python code. I use <a class="reference external" href="https://www.spyder-ide.org/">Spyder</a> or Jupyter notebooks. You can install Spyder like this:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda install spyder</span>
 </pre></div>
 </div>
@@ -73,7 +72,7 @@ You can install Spyder like this:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda install jupyter</span>
 </pre></div>
 </div>
-<p>To run a Jupyter notebook, type:</p>
+<p>To start a Jupyter notebook, simply type:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">jupyter notebook</span>
 </pre></div>
 </div>

@@ -1,16 +1,22 @@
 Installation instructions
 ***************************
 
-biops is available at PyPI and can be installed using pip.
+biops can be installed with pip or conda.
 
 .. code-block:: console
 
    pip install biops
 
+or
+
+.. code-block:: console
+
+   conda install -c omvatten biops
+
 Recommended installation procedure
 ##################################
 
-Download `Anaconda <https://www.anaconda.com/products/individual>`_ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_
+The recommended method is to download `Anaconda <https://www.anaconda.com/products/individual>`_ or `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_
 
 Open the Anaconda or Miniconda prompt (a terminal window).
 
@@ -18,23 +24,16 @@ Create a new environment. You can, for example, call it biops_env. Then, activat
 
 .. code-block:: console
 
-   conda create -n biops_env
+   conda create -n biops_env python=3.9
    conda activate biops_env
 
-biops depends on four other python packages: pandas, numpy, matplotlib, and scipy. To install them, use the following command:
+Install biops using:
 
 .. code-block:: console
 
-   conda install pandas numpy matplotlib scipy
-   
-Next, install biops using pip.
+   conda install -c omvatten biops
 
-.. code-block:: console
-
-   pip install biops
-
-To start using biops, you need some way of writing and executing Python code. I use `Spyder <https://www.spyder-ide.org/>`_ or Jupyter notebooks. 
-You can install Spyder like this:
+To start using biops, you need some way of writing and executing Python code. I use `Spyder <https://www.spyder-ide.org/>`_ or Jupyter notebooks. You can install Spyder like this:
 
 .. code-block:: console
 
@@ -50,9 +49,9 @@ You can install Jupyter like this:
 
 .. code-block:: console
 
-   conda install jupyter 
+   conda install jupyter
 
-To run a Jupyter notebook, type:
+To start a Jupyter notebook, simply type:
 
 .. code-block:: console
 
