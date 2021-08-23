@@ -416,7 +416,7 @@ class Reactor:
 
                     #Get biorates bulk
                     if VSS > 0:
-                        br = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i]).reshape((-1,1), values=self.constants) #g/m3-d
+                        br = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i], values=self.constants).reshape((-1,1)) #g/m3-d
                         brS = br*Spm
                         brS = brS.sum(axis=0)
                         brS1 = bulk_br_prev[i]*Spm
@@ -480,7 +480,7 @@ class Reactor:
                     amt_x = amt_x + dt*Qinf[i][0]*Qinf[i][1:len(xparlist)+1]
                 #Get biorates bulk
                 if VSS > 0:
-                    br = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i]).reshape((-1,1), values=self.constants) #g/m3-d
+                    br = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i], values=self.constants).reshape((-1,1)) #g/m3-d
                     brX = br*Xpm
                     brX = brX.sum(axis=0)
                     amt_x = amt_x + dt*brX*self.volumes[i]
@@ -494,7 +494,7 @@ class Reactor:
             ###Calculate production and consumption of S and X for updating loggers
             for i in range(len(self.volumes)):
                 if VSS > 0:
-                    br = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i]).reshape((-1,1), values=self.constants) #g/m3-d
+                    br = bio_rates(xpar=self.Xbulk[i], spar=self.Sbulk[i], values=self.constants).reshape((-1,1)) #g/m3-d
                     brX = br*Xpm
                     brS = br*Spm
                     Bulk_Xprod[i] = Bulk_Xprod[i] + brX.sum(axis=0)*dt
