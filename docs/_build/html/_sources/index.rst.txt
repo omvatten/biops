@@ -18,5 +18,7 @@ nitrite-oxidizing bacteria (NOB), anammox, and comammox can be simulated in susp
    Kinetics and yields
    Example_pre_denitrification.ipynb
    Example_nitrifying_biofilm.ipynb
+   Tutorial on how to specify influent
+   Tutorial on how to save a figure
 
 * :ref:`search`

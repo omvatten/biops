@@ -31,7 +31,8 @@ Install biops using:
 
 .. code-block:: console
 
-   conda install -c omvatten biops
+   conda install pandas numpy matplotlib scipy
+   pip install biops
 
 To start using biops, you need some way of writing and executing Python code. I use `Spyder <https://www.spyder-ide.org/>`_ or Jupyter notebooks. You can install Spyder like this:
 
